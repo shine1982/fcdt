@@ -2,8 +2,8 @@ var Router = Backbone.Router.extend({
     routes: {
         '': 'restos',
         'edit':'editResto',
-        'edit/:id':'editResto',
-        'edit/pdj/:id':'editPlatdujour'
+        'edit/:id':'editResto'//,
+        //'edit/pdj/:id':'editPlatdujour'
     }
 }
 )

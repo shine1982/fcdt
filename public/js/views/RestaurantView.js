@@ -38,8 +38,6 @@ var RestaurantView = Parse.View.extend({
         return this;
     },
 
-
-
     saveResto: function(e) {
         e.preventDefault();
 
@@ -54,7 +52,23 @@ var RestaurantView = Parse.View.extend({
         }
 
         resto.set(data);
-        resto.setACL(new Parse.ACL(Parse.User.current()));
+        // Set up the ACL so everyone can read the image
+        // but only the owner can have write access
+       /*
+        if(!isModeModify){//creation
+            var acl = new Parse.ACL();
+            acl.setPublicReadAccess(true);
+            if (Parse.User.current()) {
+
+                acl.setWriteAccess(Parse.User.current(), true);
+            }
+            resto.setACL(acl);
+        }*/
+
+        if(Parse.User.current()){
+            resto.set("user", Parse.User.current());
+        }
+
         resto.save(null, {
             success: function(resto) {
                var msgToShow = "Le restaurant '"+ resto.get("name") + (isModeModify?"' a été mis à jour":"' a été ajouté");

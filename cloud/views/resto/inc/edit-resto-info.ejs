@@ -38,8 +38,21 @@
             </ul>
         </div>
         <div class="form-group">
-               <a href="/restos" class="btn btn-default">Annuler</a> &nbsp; &nbsp;
+            <label for="recommandationReason">Raison de recommandation</label>
+            <textarea class="form-control" rows="8" name="recommandationReason">{{=resto? resto.get('recommandationReason'):'01'}}</textarea>
+        </div>
+        <div class="form-group">
+            <label for="recommandationReason">Tags (separés par ";")</label>
+            <input type="text" class="form-control" name="tags" value="{{=resto? resto.get('tags'):''}}" />
+        </div>
+        <div class="form-group">
+            <label for="score">Score du site (1-10)</label>
+            <input type="number" name="score" value="{{=resto? resto.get('score'):''}}" maxlength="2" min="0" max="10"/>
+        </div>
+        <div class="form-group">
+               <a href="/a/restos" class="btn btn-default">Annuler</a> &nbsp; &nbsp;
                <input type="submit" id="submitResto" class="btn btn-primary" value="Soumettre">
         </div>
+
     </form>
 </script>

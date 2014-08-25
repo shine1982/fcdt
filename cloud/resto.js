@@ -15,6 +15,7 @@ module.exports = function(){
 
         var query = new Parse.Query("Restaurant");
         query.descending("createdAt");
+
         query.limit(10);
         query.find().then(function(restos){
                 res.render('resto/restaurants',{"restos": restos});
