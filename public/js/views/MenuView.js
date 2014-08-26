@@ -1,22 +1,20 @@
-var RestaurantView = Parse.View.extend({
+var MenuView = Parse.View.extend({
 
     //... is a list tag.
     el:'#restoManagement',
 
     // Cache the template function for a single item.
-    template: _.template($('#addresto-template').html()),
+    template: _.template($('#menu-template').html()),
 
-    // The DOM events specific to an item.
     events: {
-        'submit form': 'saveResto'
+     //   'submit form': 'saveResto'
     },
 
     // The TodoView listens for changes to its model, re-rendering. Since there's
     // a one-to-one correspondence between a **Todo** and a **TodoView** in this
     // app, we set a direct reference on the model for convenience.
     initialize: function(id) {
-        this.idResto = id;
-
+       this.idResto = id;
        // this.listenTo(this.model, 'change', this.render);
     },
 
@@ -40,8 +38,6 @@ var RestaurantView = Parse.View.extend({
                 });
             }
 
-        }else{
-            this.$el.html( this.template({resto:false}) );
         }
 
         return this;

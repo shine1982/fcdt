@@ -6,7 +6,11 @@
 
     </div>
 </div>
+<% include inc/edit-title %>
 <% include inc/edit-resto-info %>
+<% include inc/edit-menu %>
+<% include inc/edit-photos %>
+<% include inc/edit-contact %>
 <script type="text/javascript">
     new Uploader({ el: "#addRestoForm" });
 
@@ -15,7 +19,11 @@
 <script src="/js/models/Restaurant.js"></script>
 <script src="/js/collections/Restaurants.js"></script>
 <script src="/js/views/RestaurantView.js"></script>
+<script src="/js/views/RestaurantManagementView.js"></script>
 <script src="/js/views/RestaurantsView.js"></script>
+<script src="/js/views/MenuView.js"></script>
+<script src="/js/views/PhotosView.js"></script>
+<script src="/js/views/ContactView.js"></script>
 <script src="/js/routers/Router.js"></script>
 
 

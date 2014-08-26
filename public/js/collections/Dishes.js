@@ -1,9 +1,9 @@
 var app = app || {};
 
 
-var Restaurants = Parse.Collection.extend({
+var Dishes = Parse.Collection.extend({
 
     // Reference to this collection's model.
-    model: app.Restaurant
+    model: app.Dish
 
 });

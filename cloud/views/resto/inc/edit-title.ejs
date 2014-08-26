@@ -1,8 +1,13 @@
-<h3>{{=resto?'Modifier le':'Ajouter un'}} restaurant</h3>
+<script type="text/template" id="restoManangement-template">
+<h3>{{=id?'修改':'添加'}}饭馆</h3>
 <hr/>
-{{if (resto){/* }}
+{{if (id){ }}
 <ul class="nav nav-tabs" role="tablist">
-    <li class="active"><a href="#edit/{{=resto.id}}">Info basique</a></li>
-    <li><a href="#edit/dish/{{=resto.id}}">Plat du jour</a></li>
+    <li {{ if(onglet==='basicinfo'){ }} class="active" {{ } }} ><a href="#edit/{{=id}}">基本信息</a></li>
+    <li {{ if(onglet==='menu'){ }} class="active" {{ } }} ><a href="#edit/{{=id}}/menu">Menu</a></li>
+    <li {{ if(onglet==='photo'){ }} class="active" {{ } }} ><a href="#edit/{{=id}}/photo">图片</a></li>
+    <li {{ if(onglet==='contact'){ }} class="active" {{ } }} ><a href="#edit/{{=id}}/contact">联系人</a></li>
 </ul>
-{{ */} }}
+{{ } }}
+<div id="restoManagement"></div>
+</script>
