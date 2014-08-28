@@ -1,12 +1,12 @@
 {
     "applications": {
         "_default": {
-            "link": "fcdtProd"
+            "link": "fcdt"
         }, 
-        "fcdtProd": {
-            "applicationId": "5vMNOUenvBCpf5y8biVWDFcdkDks40WdwV8T7JrA",
-            "javascriptKey": "Jo971aXMkEq5dl1eZBTw9wwwuSvepfxDvJ3b53Vi",
-            "masterKey": "1eb8qXBtzQ2dxcr5UBR95heMzfDrVDmZ9XPTNjIo"
+        "fcdt": {
+            "applicationId": "iwGsOVQf75GczDN5rbPWBnpVjRnihfldbFx7wpYq",
+            "javascriptKey": "gTUfi1ECtDr29soNjEAdXmCUcwrUGKvw5NVMGHTw",
+            "masterKey": "ovEmslcMH3vtmu0e32wQoDllUJemzcur0uYK7dZ5"
         }
     }, 
     "global": {
