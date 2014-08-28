@@ -1,6 +1,6 @@
 var app = app || {};
 
-app.Dish = Parse.Object.extend({
+app.Contact = Parse.Object.extend({
 
     className:"Contact"
 

@@ -82,6 +82,9 @@ var RestaurantView = Parse.View.extend({
             success: function(resto) {
                var msgToShow = "Le restaurant '"+ resto.get("name") + (isModeModify?"' a été mis à jour":"' a été ajouté");
                showMsg(0,msgToShow);
+               if(!isModeModify){
+                   app.router.navigate('edit/'+resto.id, {trigger: true});
+               }
 
             },
             error: function(resto, error) {

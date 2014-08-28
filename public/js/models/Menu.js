@@ -1,9 +1,18 @@
 var app = app || {};
 
-app.Menu = Parse.Object.extend({
-    className:"Menu",
+app.Menu = Parse.Collection.extend({
 
-    initialize: function (attrs, options) {
-        this.sound = "Rawr"
+    model: app.Dish,
+
+
+    nextOrder:function(dishType){
+        var dishes = this.filter(function(dish){
+            return dish.get("dishType") == dishType;
+        });
+        if (!dishes.length) return 1;
+        return dishes[dishes.length-1].get('order') + 1;
+    },
+    comparator:function(dish){
+        return dish.get("order");
     }
 });
