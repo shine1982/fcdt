@@ -8,7 +8,7 @@ var MenuView = Parse.View.extend({
     template: _.template($('#menu-template').html()),
 
     events: {
-        'click .addDish': 'saveDish',
+        'click .addDish': 'saveDish'
     },
 
     // The TodoView listens for changes to its model, re-rendering. Since there's
@@ -69,7 +69,9 @@ var MenuView = Parse.View.extend({
         var dishPriceEuro = $("#dishPriceEuro"+dishType).val();
         var dishPriceCentimes = $("#dishPriceCentimes"+dishType).val();
         this.saveDishToParse(dishName,dishNameCn,dishPriceEuro,dishPriceCentimes,dishType);
-
+        $("#dishName"+dishType).val('');
+        $("#dishNameCn"+dishType).val('');
+        $("#dishPriceEuro"+dishType).val('');
     },
 
     saveDishToParse: function(name, nameCN, priceEuro, priceCentimes, dishType){//Type 1 entree, type 2 plat, type 3 dessert
@@ -95,7 +97,4 @@ var MenuView = Parse.View.extend({
         this.$el.html( this.template());
         return this;
     }
-
-
-
 });
