@@ -3,90 +3,161 @@ var PhotosView = Parse.View.extend({
     //... is a list tag.
     el:'#restoManagement',
 
+    currentPhotoType:0,
+    selectedOriginalPhoto:null,
+    croppedResult:null,
+
     // Cache the template function for a single item.
     template: _.template($('#photos-template').html()),
 
     events: {
-        //   'submit form': 'saveResto'
+        'click .addPhoto': 'setPhotoType',
+        'change #imageUploader': 'fileSelected',
+        'click #submitCroppedPhoto': 'submitCroppedPhoto'
     },
-
-    // The TodoView listens for changes to its model, re-rendering. Since there's
-    // a one-to-one correspondence between a **Todo** and a **TodoView** in this
-    // app, we set a direct reference on the model for convenience.
     initialize: function(id) {
-        this.idResto = id;
-        // this.listenTo(this.model, 'change', this.render);
-    },
-
-    render: function() {
         var that = this;
-        if(this.idResto){
-            if(app.resto && app.resto.id===this.idResto){
-                that.$el.html( that.template({resto: app.resto}));
-                that.resto=app.resto;
+        that.idResto = id;
+
+        if(id){
+            if(app.resto && app.resto.id === id){
+                this.initPhotos();
             }else{
                 var query = new Parse.Query(app.Restaurant);
-                query.get(this.idResto, {
+                query.get(id, {
                     success: function(resto) {
-                        that.$el.html( that.template({resto: resto}) );
                         app.resto = resto;
-                        that.resto=resto;
+                        that.initPhotos();
                     },
                     error: function(object, error) {
-                        showMsg(3,"Error pour récuperer le resto avec id "+this.idResto +" ("+error+")");
+                        showMsg(3,"Error pour récuperer le resto avec id "+that.idResto +" ("+error+")");
                     }
                 });
             }
-
         }
 
-        return this;
+
+
     },
+    initPhotos:function(){
+        app.resto.photos = new app.Photos();
+        app.resto.photos.on('add', this.addOne);
 
-    saveResto: function(e) {
-        e.preventDefault();
-
-        var data = Backbone.Syphon.serialize(this);
-        var resto;
-        var isModeModify=false;
-        if(this.resto){
-            resto = this.resto;
-            isModeModify=true;
-        }else{
-            resto = new app.Restaurant();
-        }
-
-        resto.set(data);
-        // Set up the ACL so everyone can read the image
-        // but only the owner can have write access
-        /*
-         if(!isModeModify){//creation
-         var acl = new Parse.ACL();
-         acl.setPublicReadAccess(true);
-         if (Parse.User.current()) {
-
-         acl.setWriteAccess(Parse.User.current(), true);
-         }
-         resto.setACL(acl);
-         }*/
-
-        if(Parse.User.current()){
-            resto.set("user", Parse.User.current());
-        }
-
-        resto.save(null, {
-            success: function(resto) {
-                var msgToShow = "Le restaurant '"+ resto.get("name") + (isModeModify?"' a été mis à jour":"' a été ajouté");
-                showMsg(0,msgToShow);
-
-            },
-            error: function(resto, error) {
-                showMsg(3,error.message);
+        var queryPhotos = new Parse.Query(app.Photo);
+        queryPhotos.equalTo("resto", app.resto);
+        queryPhotos.find({
+            success: function(results){
+                app.resto.photos.add(results);
             }
         });
+    },
+    addOne:function(photo){
 
+        var photoView = new PhotoView({model:photo})
+        var idSelector = "#dishPhotosContainer";
+        if(photo.get("category")==app.constants.PHOTO_CATEGORY.restaurant){
+            idSelector = "#restoPhotosContainer";
+        }
+        $(idSelector).append(photoView.render().el);
+    },
+    setPhotoType:function(e){
+      if(e.currentTarget.id==="addDishPhoto"){
+          this.currentPhotoType = app.constants.PHOTO_CATEGORY.dish;
+      }else if(e.currentTarget.id==="addRestoPhoto"){
+          this.currentPhotoType = app.constants.PHOTO_CATEGORY.restaurant;
+      }
+    },
+
+    fileSelected : function() {
+        var that = this;
+
+
+        if ($("#imageUploader")[0].files.length > 0) {
+
+            var file = $("#imageUploader")[0].files[0];
+            $("#uploadImageSpin").show();
+            $("#originalImage").html($("#image-panel-template").html());
+            // Create an image
+            var img = document.createElement("img");
+            // Create a file reader
+            var reader = new FileReader();
+            // Set the image once loaded into file reader
+            reader.onload = function(e)
+            {
+                img.src = e.target.result;
+
+                var canvas = document.createElement("canvas");
+                var ctx = canvas.getContext("2d");
+                ctx.drawImage(img, 0, 0);
+
+                var MAX_WIDTH = 1024;
+                var MAX_HEIGHT = 768;
+                var width = img.width;
+                var height = img.height;
+
+                if (width > height) {
+                    if (width > MAX_WIDTH) {
+                        height *= MAX_WIDTH / width;
+                        width = MAX_WIDTH;
+                    }
+                } else {
+                    if (height > MAX_HEIGHT) {
+                        width *= MAX_HEIGHT / height;
+                        height = MAX_HEIGHT;
+                    }
+                }
+                canvas.width = width;
+                canvas.height = height;
+                var ctx = canvas.getContext("2d");
+                ctx.drawImage(img, 0, 0, width, height);
+                var dataurl = canvas.toDataURL("image/jpeg");
+
+                var name = "image.jpg";
+                var parseFile = new Parse.File(name, {base64: dataurl.substring(23)});
+
+
+                parseFile.save().then(function() {
+                    $("#uploadImageSpin").hide();
+                    that.selectedOriginalPhoto=parseFile;
+                    $("#imageContainer").attr("src",parseFile.url());
+                    $(".cropper").cropper({
+                        aspectRatio: 1.333,
+                        done: function(data) {
+                            that.croppedResult = data;
+                        }
+                    });
+                });
+
+            }
+            reader.readAsDataURL(file);
+        } else {
+            alert("Please select a file");
+        }
+    },
+    submitCroppedPhoto: function(){
+
+        var photo = new app.Photo();
+        photo.set("originalPhoto",this.selectedOriginalPhoto);
+        photo.set("croppedx",this.croppedResult.x);
+        photo.set("croppedy",this.croppedResult.y);
+        photo.set("croppedWidth",this.croppedResult.width);
+        photo.set("croppedHeight",this.croppedResult.height);
+        photo.set("resto",app.resto);
+        photo.set("category",this.currentPhotoType);
+        photo.set("order", app.resto.photos.nextOrder(this.currentPhotoType));
+        photo.save()
+            .then(function(photo){
+                $('#normalImageModel').modal('hide');
+                $("#originalImage").html("");
+                $(".file-input-name").html("");
+                app.resto.photos.add(photo);
+            }
+
+        )
+    },
+
+    render: function() {
+        this.$el.html( this.template());
+        return this;
     }
-
-
-
 });

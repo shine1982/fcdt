@@ -7,80 +7,74 @@ var ContactView = Parse.View.extend({
     template: _.template($('#contact-template').html()),
 
     events: {
-        //   'submit form': 'saveResto'
+       'submit form': 'saveContact'
     },
 
     // The TodoView listens for changes to its model, re-rendering. Since there's
     // a one-to-one correspondence between a **Todo** and a **TodoView** in this
     // app, we set a direct reference on the model for convenience.
     initialize: function(id) {
-        this.idResto = id;
-        // this.listenTo(this.model, 'change', this.render);
-    },
 
+        // this.listenTo(this.model, 'change', this.render);
+        this.idResto = id;
+
+    },
+    searchContactAndShow:function(){
+        var that = this;
+        var queryContact = new Parse.Query(app.Contact);
+        queryContact.equalTo("resto", app.resto);
+        queryContact.first({
+            success: function(result){
+                if(result){
+                    app.resto.contact = result;
+                    that.$el.html( that.template({contact: result}) );
+                }else{
+                    app.resto.contact = new app.Contact();
+                }
+            },
+            error:function(error){
+                app.resto.contact = new app.Contact();
+                that.$el.html( that.template({contact: app.resto.contact}) );
+            }
+        });
+    },
     render: function() {
         var that = this;
         if(this.idResto){
-            if(app.resto && app.resto.id===this.idResto){
-                that.$el.html( that.template({resto: app.resto}));
-                that.resto=app.resto;
+            if(app.resto && app.resto.id === this.idResto){
+                this.searchContactAndShow();
             }else{
-                var query = new Parse.Query(app.Restaurant);
-                query.get(this.idResto, {
+                var queryResto = new Parse.Query(app.Restaurant);
+                queryResto.get(this.idResto, {
                     success: function(resto) {
-                        that.$el.html( that.template({resto: resto}) );
                         app.resto = resto;
-                        that.resto=resto;
+                        that.searchContactAndShow();
                     },
                     error: function(object, error) {
-                        showMsg(3,"Error pour récuperer le resto avec id "+this.idResto +" ("+error+")");
+                        showMsg(3,"Error pour récuperer le resto avec id "+this.id +" ("+error+")");
                     }
                 });
             }
-
         }
 
+        this.$el.html( this.template({contact: false}) );
         return this;
     },
 
-    saveResto: function(e) {
+    saveContact: function(e) {
         e.preventDefault();
 
         var data = Backbone.Syphon.serialize(this);
-        var resto;
-        var isModeModify=false;
-        if(this.resto){
-            resto = this.resto;
-            isModeModify=true;
-        }else{
-            resto = new app.Restaurant();
-        }
 
-        resto.set(data);
-        // Set up the ACL so everyone can read the image
-        // but only the owner can have write access
-        /*
-         if(!isModeModify){//creation
-         var acl = new Parse.ACL();
-         acl.setPublicReadAccess(true);
-         if (Parse.User.current()) {
-
-         acl.setWriteAccess(Parse.User.current(), true);
-         }
-         resto.setACL(acl);
-         }*/
-
-        if(Parse.User.current()){
-            resto.set("user", Parse.User.current());
-        }
-
-        resto.save(null, {
-            success: function(resto) {
-                var msgToShow = "Le restaurant '"+ resto.get("name") + (isModeModify?"' a été mis à jour":"' a été ajouté");
+        app.resto.contact.set(data);
+        app.resto.contact.set("resto",app.resto);
+        app.resto.contact.save(null, {
+            success: function(contact) {
+                app.resto.contact = contact;
+                var msgToShow = "Le contact '"+ contact.get("firstname") + "' a été mis à jour";
                 showMsg(0,msgToShow);
-
             },
-            error: function(resto, error) {
+            error: function(contact, error) {
                 showMsg(3,error.message);
             }
         });
