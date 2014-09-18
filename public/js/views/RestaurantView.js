@@ -86,7 +86,7 @@ var RestaurantView = Parse.View.extend({
     },
     saveResto: function(e) {
         e.preventDefault();
-
+        var that = this;
         var data = Backbone.Syphon.serialize(this);
         var resto;
         var isModeModify=false;
@@ -122,44 +122,46 @@ var RestaurantView = Parse.View.extend({
         }
 
         var relation = resto.relation("recReasonsOfResto");
+        if(isModeModify){
 
-        relation.query().find({
-            success: function(list) {
-               for(var i=0; i<list.length; i++){
-                   relation.remove(list[i]);
-               }
-               resto.save().then(
-                   function(){
-                       for(var i=0; i<recReasons.length; i++){
-                           var recR = new app.RecReason();
-                           if(recReasons[i]!==""){
-                               recR.id=recReasons[i];
-                               relation.add(recR);
-                           }
-                       }
-
-                       resto.save(null, {
-                           success: function(resto) {
-                               var msgToShow = "Le restaurant '"+ resto.get("name") + (isModeModify?"' a été mis à jour":"' a été ajouté");
-                               showMsg(0,msgToShow);
-
-                               if(!isModeModify){
-                                   app.router.navigate('edit/'+resto.id, {trigger: true});
-                               }
-                           },
-                           error: function(resto, error) {
-                               showMsg(3,error.message);
-                           }
-                       });
+            relation.query().find({
+                success: function(list) {
+                   for(var i=0; i<list.length; i++){
+                       relation.remove(list[i]);
                    }
-               )
+                   that.saveRestoWithRecRecReasons(resto,recReasons, relation, isModeModify);
+                }
+            });
+        }else{
+            that.saveRestoWithRecRecReasons(resto,recReasons, relation, isModeModify);
+        }
+    },
+    saveRestoWithRecRecReasons:function(resto, recReasons,relation,isModeModify){
+        resto.save().then(
+            function(){
+                for(var i=0; i<recReasons.length; i++){
+                    var recR = new app.RecReason();
+                    if(recReasons[i]!==""){
+                        recR.id=recReasons[i];
+                        relation.add(recR);
+                    }
+                }
+
+                resto.save(null, {
+                    success: function(resto) {
+                        var msgToShow = "Le restaurant '"+ resto.get("name") + (isModeModify?"' a été mis à jour":"' a été ajouté");
+                        showMsg(0,msgToShow);
+
+                        if(!isModeModify){
+                            app.router.navigate('edit/'+resto.id, {trigger: true});
+                        }
+                    },
+                    error: function(resto, error) {
+                        showMsg(3,error.message);
+                    }
+                });
             }
-        });
-
-
-
+        )
     }
-
-
 
 });
