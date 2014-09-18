@@ -33,6 +33,7 @@ var RestaurantView = Parse.View.extend({
                         that.$el.html( that.template({resto: resto}) );
                         app.resto = resto;
                         that.resto=resto;
+                        that.initRecReasonList(false);
                     },
                     error: function(object, error) {
                         showMsg(3,"Error pour récuperer le resto avec id "+this.idResto +" ("+error+")");
@@ -42,11 +43,47 @@ var RestaurantView = Parse.View.extend({
 
         }else{
             this.$el.html( this.template({resto:false}) );
+            that.initRecReasonList(true);
         }
 
         return this;
     },
+    initRecReasonList:function(createMode){
+        var that = this;
+        //set liste combobox of recommand reasons
+        if(!app.restoRecList){
+            var query = new Parse.Query(app.RecReason);
+            query.find().then(
+                function(results){
+                    app.restoRecList = results;
+                    that.initRecList(createMode);
+                },
+                function(results,error){
+                    console.log(error);
+                }
+            )
+        }else{
+            this.initRecList(createMode);
+        }
+    },
+    initRecList: function(createMode){
+        for(var i=0; i<app.restoRecList.length; i++){
+            $("#recReasonList"+app.restoRecList[i].get("type") ).append(
+                "<option value='"+app.restoRecList[i].id +"'>"+app.restoRecList[i].get("label")+"</option>" );
+        }
+        if(!createMode){
+            var relation = app.resto.relation("recReasonsOfResto");
 
+            relation.query().find({
+                success: function(list) {
+                    for(var i=0; i<list.length; i++){
+                        $("#recReasonList"+list[i].get("type")).val(list[i].id);
+                    }
+                }
+            });
+        }
+
+    },
     saveResto: function(e) {
         e.preventDefault();
 
@@ -61,6 +98,12 @@ var RestaurantView = Parse.View.extend({
         }
 
         resto.set(data);
+
+        var recReasons = ["","",""];
+        for(var i=0; i<recReasons.length; i++){
+            recReasons[i]=resto.get("recReason"+(i+1));
+            resto.unset("recReason"+(i+1));
+        }
         // Set up the ACL so everyone can read the image
         // but only the owner can have write access
        /*
@@ -78,19 +121,42 @@ var RestaurantView = Parse.View.extend({
             resto.set("user", Parse.User.current());
         }
 
-        resto.save(null, {
-            success: function(resto) {
-               var msgToShow = "Le restaurant '"+ resto.get("name") + (isModeModify?"' a été mis à jour":"' a été ajouté");
-               showMsg(0,msgToShow);
-               if(!isModeModify){
-                   app.router.navigate('edit/'+resto.id, {trigger: true});
-               }
+        var relation = resto.relation("recReasonsOfResto");
 
-            },
-            error: function(resto, error) {
-                showMsg(3,error.message);
+        relation.query().find({
+            success: function(list) {
+               for(var i=0; i<list.length; i++){
+                   relation.remove(list[i]);
+               }
+               resto.save().then(
+                   function(){
+                       for(var i=0; i<recReasons.length; i++){
+                           var recR = new app.RecReason();
+                           if(recReasons[i]!==""){
+                               recR.id=recReasons[i];
+                               relation.add(recR);
+                           }
+                       }
+
+                       resto.save(null, {
+                           success: function(resto) {
+                               var msgToShow = "Le restaurant '"+ resto.get("name") + (isModeModify?"' a été mis à jour":"' a été ajouté");
+                               showMsg(0,msgToShow);
+
+                               if(!isModeModify){
+                                   app.router.navigate('edit/'+resto.id, {trigger: true});
+                               }
+                           },
+                           error: function(resto, error) {
+                               showMsg(3,error.message);
+                           }
+                       });
+                   }
+               )
             }
         });
+
+
 
     }
 

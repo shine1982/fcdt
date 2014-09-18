@@ -57,7 +57,9 @@
                     中午
                     <input type="text" pattern="\d*" size="1" maxlength="3" name="priceNoon" value="{{=resto? resto.get('priceNoon'):'10'}}" style="text-align:right;"> € <br/><br/>
                     晚上
-                    <input type="text" pattern="\d*" size="1" maxlength="3" name="priceEvening" value="{{=resto? resto.get('priceEvening'):'20'}}" style="text-align:right;">  €
+                    <input type="text" pattern="\d*" size="1" maxlength="3" name="priceEvening" value="{{=resto? resto.get('priceEvening'):'20'}}" style="text-align:right;">  €<br/><br/>
+                    价格说明
+                    <input type="text" class="form-control" name="priceSpecial" value="{{=resto? resto.get('priceSpecial'):''}}">
                 </div>
             </div>
         </div>
@@ -68,9 +70,9 @@
                 </div>
                 <div class="panel-body">
                    <ul class="list-group">
-                       <li class="list-group-item">理由1 <input type="text" size="10" name="recommandationReason1" value="{{=resto? resto.get('recommandationReason1'):''}}" /> </li>
-                       <li class="list-group-item">理由2 <input type="text" size="10" name="recommandationReason2" value="{{=resto? resto.get('recommandationReason2'):''}}" /> </li>
-                       <li class="list-group-item">理由3 <input type="text" size="10" name="recommandationReason3" value="{{=resto? resto.get('recommandationReason3'):''}}" /> </li>
+                       <li class="list-group-item">理由1 <select id="recReasonList1" name="recReason1"><option value=""></option></select></li>
+                       <li class="list-group-item">理由2 <select id="recReasonList2" name="recReason2"><option value=""></option></select></li>
+                       <li class="list-group-item">理由3 <select id="recReasonList3" name="recReason3"><option value=""></option></select> </li>
                        <li class="list-group-item">特殊理由 <input type="text" class="form-control" name="recommandationReason" value="{{=resto? resto.get('recommandationReason'):''}}" /> </li>
                    </ul>
 
