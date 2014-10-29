@@ -32,9 +32,8 @@ table tr:hover .destroy {
 
 .panel-body .destroy {
     display: none;
-
     width: 40px;
-    height: 40px;
+    height: 20px;
     margin: auto 0;
     font-size: 22px;
     color: #a88a8a;
@@ -56,4 +55,59 @@ table tr:hover .destroy {
 
 .panel-body .photoTbn:hover .destroy {
     display: block;
+}
+
+td .dishFrenchNameLabel{
+    display: block;
+}
+td .dishFrenchNameInput{
+    display: none;
+}
+td.editing .dishFrenchNameLabel{
+    display: none;
+}
+td.editing .dishFrenchNameInput{
+    display: block;
+}
+
+
+td .dishChineseNameLabel{
+    display: block;
+}
+td .dishChineseNameInput{
+    display: none;
+}
+td.editing .dishChineseNameLabel{
+    display: none;
+}
+td.editing .dishChineseNameInput{
+    display: block;
+}
+
+
+td .dishPriceEuroLabel{
+    display: inline-block;
+}
+td .dishPriceEuroInput{
+    display: none;
+}
+td.editing .dishPriceEuroLabel{
+    display: none;
+}
+td.editing .dishPriceEuroInput{
+    display: inline-block;
+}
+
+
+td .dishPriceCentimesLabel{
+    display: inline-block;
+}
+td .dishPriceCentimesInput{
+    display: none;
+}
+td.editing .dishPriceCentimesLabel{
+    display: none;
+}
+td.editing .dishPriceCentimesInput{
+    display: inline-block;
 }
