@@ -68,13 +68,14 @@
     </div>
 </script>
 <script type="text/template" id="dish-template">
-<td>
-    {{=name}}
+<td><lable class="dishFrenchNameLabel">{{=name}}</lable>
+    <input class="dishNameInput"type="text" value="{{=name}}" />
 </td>
-<td>
-    {{=namecn}}
+<td><lable class="dishFrenchNameLabel">{{=namecn}}</lable>
+    <input class="dishNameInput"type="text" value="{{=namecn}}" />
 </td>
-<td>{{=priceEuro}}.{{=priceCentimes}} €</td>
+<td><lable class="dishPriceEuroLabel">{{=priceEuro}}</lable><input class="dishNameInput"type="text" value="{{=namecn}}" />.
+    <lable class="dishPriceEuroLabel">{{=priceCentimes}}</lable> €</td>
 <td>
 
    <span class="destroy"></span>
