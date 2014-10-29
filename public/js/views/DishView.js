@@ -8,13 +8,13 @@ var DishView = Parse.View.extend({
 
     events: {
         'click .destroy': 'clear',
-        'dblclick .dishFrenchNameLabel':'frenchNameEdit',
+        'click .dishFrenchNameLabel':'frenchNameEdit',
         'blur .dishFrenchNameInput': 'frenchNameEdited',
-        'dblclick .dishChineseNameLabel':'chineseNameEdit',
+        'click .dishChineseNameLabel':'chineseNameEdit',
         'blur .dishChineseNameInput': 'chineseNameEdited',
-        'dblclick .dishPriceEuroLabel':'dishPriceEuroEdit',
+        'click .dishPriceEuroLabel':'dishPriceEuroEdit',
         'blur .dishPriceEuroInput': 'dishPriceEuroEdited',
-        'dblclick .dishPriceCentimesLabel':'dishPriceCentimesEdit',
+        'click .dishPriceCentimesLabel':'dishPriceCentimesEdit',
         'blur .dishPriceCentimesInput': 'dishPriceCentimesEdited'
     },
 
