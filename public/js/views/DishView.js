@@ -19,53 +19,58 @@ var DishView = Parse.View.extend({
     },
 
     addEditing:function(className){
-        this.$("."+className).parent().addClass("editing");
+        this.$(className).parent().addClass("editing");
+        this.$(className).focus();
     },
 
     removeEditing:function(className){
-        this.$("."+className).parent().removeClass("editing");
+        this.$(className).parent().removeClass("editing");
     },
     frenchNameEdit:function(){
-        this.addEditing("dishFrenchNameLabel");
+        this.addEditing(this.dishFrenchNameInputClass);
     },
     frenchNameEdited:function(){
-        this.removeEditing("dishFrenchNameLabel");
+        this.removeEditing(this.dishFrenchNameInputClass);
         this.model.save({
-            name:this.$(".dishFrenchNameInput").val()
+            name:this.$(this.dishFrenchNameInputClass).val()
         });
     },
     chineseNameEdit:function(){
-        this.addEditing("dishChineseNameLabel");
+        this.addEditing(this.dishChineseNameInputClass);
     },
     chineseNameEdited:function(){
-        this.removeEditing("dishChineseNameLabel");
+        this.removeEditing(this.dishChineseNameInputClass);
         this.model.save({
-            namecn:this.$(".dishChineseNameInput").val()
+            namecn:this.$(this.dishChineseNameInputClass).val()
         });
     },
     dishPriceEuroEdit:function(){
-        this.addEditing("dishPriceEuroLabel");
+        this.addEditing(this.dishPriceEuroInputClass);
     },
     dishPriceEuroEdited:function(){
-        this.removeEditing("dishPriceEuroLabel");
+        this.removeEditing(this.dishPriceEuroInputClass);
         this.model.save({
-            priceEuro:this.$(".dishPriceEuroInput").val()
+            priceEuro:this.$(this.dishPriceEuroInputClass).val()
         });
     },
     dishPriceCentimesEdit:function(){
-        this.addEditing("dishPriceCentimesLabel");
+        this.addEditing(this.dishPriceCentimesInputClass);
 
     },
     dishPriceCentimesEdited:function(){
-        this.removeEditing("dishPriceCentimesLabel");
+        this.removeEditing(this.dishPriceCentimesInputClass);
         this.model.save({
-            priceCentimes:this.$(".dishPriceCentimesInput").val()
+            priceCentimes:this.$(this.dishPriceCentimesInputClass).val()
         });
     },
     initialize: function() {
         _.bindAll(this,"render","frenchNameEdit","frenchNameEdited","chineseNameEdit","chineseNameEdited",
         "dishPriceEuroEdit","dishPriceEuroEdited","dishPriceCentimesEdit","dishPriceCentimesEdited");
         this.model.bind('change', this.render);
+        this.dishFrenchNameInputClass=".dishFrenchNameInput";
+        this.dishChineseNameInputClass=".dishChineseNameInput";
+        this.dishPriceEuroInputClass=".dishPriceEuroInput";
+        this.dishPriceCentimesInputClass=".dishPriceCentimesInput";
     },
 
     render: function() {
