@@ -26,6 +26,7 @@ var RestaurantView = Parse.View.extend({
             if(app.resto && app.resto.id===this.idResto){
                 that.$el.html( that.template({resto: app.resto}));
                 that.resto=app.resto;
+                that.initRecReasonList(false);
             }else{
                 var query = new Parse.Query(app.Restaurant);
                 query.get(this.idResto, {

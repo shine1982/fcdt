@@ -68,17 +68,15 @@
     </div>
 </script>
 <script type="text/template" id="dish-template">
-<td><lable class="dishFrenchNameLabel">{{=name}}</lable>
-    <input class="dishNameInput"type="text" value="{{=name}}" />
+<td><lable class="dishFrenchNameLabel">{{=(name===''?'to be edited':name)}}</lable>
+    <input class="dishFrenchNameInput"type="text" value="{{=name}}"/>
 </td>
-<td><lable class="dishFrenchNameLabel">{{=namecn}}</lable>
-    <input class="dishNameInput"type="text" value="{{=namecn}}" />
+<td><lable class="dishChineseNameLabel">{{=(namecn===''?'to be edited':namecn)}}</lable>
+    <input class="dishChineseNameInput"type="text" value="{{=namecn}}"/>
 </td>
-<td><lable class="dishPriceEuroLabel">{{=priceEuro}}</lable><input class="dishNameInput"type="text" value="{{=namecn}}" />.
-    <lable class="dishPriceEuroLabel">{{=priceCentimes}}</lable> €</td>
+<td><lable class="dishPriceEuroLabel">{{=(priceEuro===''?0:priceEuro)}}</lable><input class="dishPriceEuroInput" type="text" value="{{=priceEuro}}" size="1"/>.
+    <lable class="dishPriceCentimesLabel">{{=priceCentimes}}</lable><input class="dishPriceCentimesInput"type="text" value="{{=priceCentimes}}" size="1"/> €</td>
 <td>
-
    <span class="destroy"></span>
-
 </td>
 </script>
