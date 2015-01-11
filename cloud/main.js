@@ -23,8 +23,27 @@ Parse.Cloud.afterSave("Restaurant",function(req){
             var geoLocation = httpResponse.data.results[0].geometry.location;
             var point = new Parse.GeoPoint({latitude: geoLocation.lat, longitude: geoLocation.lng});
             resto.set("location",point);
-            resto.save();
-            console.log("saved location");
+            resto.save().then(
+                function(resto){
+                    //maintenant on cherche les métros au tour de ce point
+
+                    var query = new Parse.Query("RatpStation");
+                    query.withinKilometers("location", point, 0.3);
+                    return query.find();
+                }
+            ).then(function(ratpStations){
+                    if(ratpStations.length==0){
+                        var query = new Parse.Query("RatpStation");
+                        query.withinKilometers("location", point, 0.5);//another try with 500m
+                        query.find().then(function(ratpStations){
+                            resto.set("metro", ratpStations);
+                            return resto.save();
+                        })
+                    }else{
+                        resto.set("metro", ratpStations);
+                        return resto.save();
+                    }
+                });
         },
         error: function(httpResponse) {
             console.error('Request failed with response code ' + httpResponse.status);
